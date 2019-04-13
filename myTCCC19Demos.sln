@@ -7,6 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "myFeedback", "myFeedback\my
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "settings", "settings", "{8290B04F-70B8-4E14-9F23-709C273D13D6}"
 	ProjectSection(SolutionItems) = preProject
+		deck\fnQueueToTable.csx = deck\fnQueueToTable.csx
 		deck\TCCC19-Where’s my stuff.pdf = deck\TCCC19-Where’s my stuff.pdf
 	EndProjectSection
 EndProject
