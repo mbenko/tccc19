@@ -7,9 +7,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "myFeedback", "myFeedback\my
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "settings", "settings", "{8290B04F-70B8-4E14-9F23-709C273D13D6}"
 	ProjectSection(SolutionItems) = preProject
-		deck\fnQueueToTable.csx = deck\fnQueueToTable.csx
-		deck\function,json = deck\function,json
 		deck\TCCC19-Where’s my stuff.pdf = deck\TCCC19-Where’s my stuff.pdf
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "myFunction", "myFunction", "{742A700C-22C0-4680-B970-0107B9B46AD2}"
+	ProjectSection(SolutionItems) = preProject
+		Function\fnQueueToTable.csx = Function\fnQueueToTable.csx
+		Function\function,json = Function\function,json
 	EndProjectSection
 EndProject
 Global
