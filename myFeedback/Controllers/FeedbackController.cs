@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using myFeedback.Models;
 
@@ -12,35 +13,38 @@ namespace myFeedback.Controllers
     public class FeedbackController : Controller
     {
         private readonly myDataContext _context;
+        private readonly CosmosContainer _cosmos;
 
-        public FeedbackController(myDataContext context)
+        public FeedbackController(myDataContext context, CosmosContainer cosmos)
         {
+            _cosmos = cosmos;
             _context = context;
         }
 
         // GET: Feedback
         public async Task<IActionResult> Index()
         {
+            return View(await GetCosmosItems());
             return View(await _context.Feedback.ToListAsync());
         }
 
-        // GET: Feedback/Details/5
-        public async Task<IActionResult> Details(string id)
+        // Return List of Feedback from Cosmos DB
+        private async Task<List<Feedback>> GetCosmosItems()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            // Read a single query page from Azure cosmos DB as stream
+            var myQueryDef = new CosmosSqlQueryDefinition($"Select * from f where f.Complete != true");
 
-            var feedback = await _context.Feedback
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (feedback == null)
-            {
-                return NotFound();
-            }
+            var myQuery = _cosmos.Items.CreateItemQuery<Feedback>(myQueryDef, maxConcurrency: 4);
 
-            return View(feedback);
+            List<Feedback> myData = new List<Feedback>();
+            while (myQuery.HasMoreResults)
+            {
+                var set = await myQuery.FetchNextSetAsync();
+                myData.AddRange(set);
+            }
+            return myData;
         }
+
 
         // GET: Feedback/Create
         public IActionResult Create()
@@ -57,8 +61,13 @@ namespace myFeedback.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Add to SQL
                 _context.Add(feedback);
                 await _context.SaveChangesAsync();
+
+                // Add to Cosmos
+                await _cosmos.Items.CreateItemAsync<Feedback>(feedback.Session, feedback);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(feedback);
@@ -112,6 +121,24 @@ namespace myFeedback.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            return View(feedback);
+        }
+
+        // GET: Feedback/Details/5
+        public async Task<IActionResult> Details(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var feedback = await _context.Feedback
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (feedback == null)
+            {
+                return NotFound();
+            }
+
             return View(feedback);
         }
 

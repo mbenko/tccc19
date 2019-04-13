@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using myFeedback.Models;
+using Microsoft.Azure.Cosmos;
 
 namespace myFeedback
 {
@@ -36,8 +37,18 @@ namespace myFeedback
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            // Add SQL Data Store
             services.AddDbContext<myDataContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("myDataContext")));
+
+            // Add Cosmos
+            // configure Cosmos
+            var client = new CosmosClient(Configuration.GetConnectionString("myCosmos"));
+            CosmosDatabase db = client.Databases.CreateDatabaseIfNotExistsAsync("TCCC19").Result;
+            CosmosContainer myFeedback = db.Containers.CreateContainerIfNotExistsAsync("Feedback", "/Session", 400).Result;
+
+            services.AddSingleton<CosmosContainer>(myFeedback);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
