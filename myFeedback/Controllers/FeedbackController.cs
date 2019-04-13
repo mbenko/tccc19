@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.WindowsAzure.Storage.Queue;
 using myFeedback.Models;
+using Newtonsoft.Json;
 
 namespace myFeedback.Controllers
 {
@@ -14,11 +16,13 @@ namespace myFeedback.Controllers
     {
         private readonly myDataContext _context;
         private readonly CosmosContainer _cosmos;
+        private readonly CloudQueue _queue;
 
-        public FeedbackController(myDataContext context, CosmosContainer cosmos)
+        public FeedbackController(myDataContext context, CosmosContainer cosmos, CloudQueue queue)
         {
             _cosmos = cosmos;
             _context = context;
+            _queue = queue;
         }
 
         // GET: Feedback
@@ -67,6 +71,10 @@ namespace myFeedback.Controllers
 
                 // Add to Cosmos
                 await _cosmos.Items.CreateItemAsync<Feedback>(feedback.Session, feedback);
+
+                // Add Queue Message
+                await _queue.AddMessageAsync(new CloudQueueMessage(JsonConvert.SerializeObject(feedback)));
+
 
                 return RedirectToAction(nameof(Index));
             }

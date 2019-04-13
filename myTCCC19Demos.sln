@@ -5,6 +5,11 @@ VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "myFeedback", "myFeedback\myFeedback.csproj", "{6F2A0085-B4A5-44E2-B2B4-8D4AC9372292}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "settings", "settings", "{8290B04F-70B8-4E14-9F23-709C273D13D6}"
+	ProjectSection(SolutionItems) = preProject
+		deck\TCCC19-Where’s my stuff.pdf = deck\TCCC19-Where’s my stuff.pdf
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

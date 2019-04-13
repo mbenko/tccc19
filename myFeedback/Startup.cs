@@ -12,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using myFeedback.Models;
 using Microsoft.Azure.Cosmos;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Queue;
 
 namespace myFeedback
 {
@@ -41,13 +43,20 @@ namespace myFeedback
             services.AddDbContext<myDataContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("myDataContext")));
 
-            // Add Cosmos
-            // configure Cosmos
+            // Add Cosmos Store
             var client = new CosmosClient(Configuration.GetConnectionString("myCosmos"));
             CosmosDatabase db = client.Databases.CreateDatabaseIfNotExistsAsync("TCCC19").Result;
             CosmosContainer myFeedback = db.Containers.CreateContainerIfNotExistsAsync("Feedback", "/Session", 400).Result;
 
             services.AddSingleton<CosmosContainer>(myFeedback);
+
+            // Add Azure Queues
+            CloudStorageAccount AzAccount = CloudStorageAccount.Parse(Configuration.GetConnectionString("myStorage"));
+            CloudQueueClient azQClient = AzAccount.CreateCloudQueueClient();
+            CloudQueue azQueue = azQClient.GetQueueReference("new-feedback");
+            azQueue.CreateIfNotExistsAsync();
+
+            services.AddSingleton<CloudQueue>(azQueue);
 
         }
 
