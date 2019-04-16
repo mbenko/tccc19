@@ -1,0 +1,41 @@
+﻿@page
+@{
+    ViewData["Title"] = "myStuff";
+}
+    <link href="~/css/myStyles.css" rel="stylesheet" />
+<div id='wrapper'>
+    <article>
+        <div class="myHeader" id="myHeader">
+            <h2>BenkoTIPS</h2>
+            <h1>Feedback</h1>
+
+            <form id='add-item'>
+                <button type='submit'>Add</button>
+                <div><input type='text' id='new-item-text' placeholder='Enter new task' /></div>
+            </form>
+        </div>
+
+        <ul id='todo-items'>
+            <li id='data-todoitem-id'>
+                <button class='item-delete'>Delete</button>
+                <input type='checkbox' class='item-complete'>
+                <div>
+                    <input class='item-text' value="item 123" />
+                </div>
+            </li>
+
+            <li id='data-todoitem-id'><button class='item-delete'>Delete</button><input type='checkbox' class='item-complete'><div><input class='item-text' value='item 123' /></div></li>
+            <li id='data-todoitem-id'><button class='item-delete'>Delete</button><input type='checkbox' class='item-complete'><div><input class='item-text' value='item 123' /></div></li>
+            <li id='data-todoitem-id'><button class='item-delete'>Delete</button><input type='checkbox' class='item-complete'><div><input class='item-text' value='item 123' /></div></li>
+        </ul>
+        <p id='summary'>Loading...</p>
+    </article>
+
+    <footer>
+        <a href='http://www.benkotips.com/'>
+            Visit BenkoTIPS for info about today's talk!
+        </a>
+    </footer>
+</div>
+
+
